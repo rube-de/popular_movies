@@ -22,10 +22,12 @@ import java.net.URL;
  */
 public class FetchMovieGalleryTask extends AsyncTask<String,Void,String[]> {
     private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
-    private static final String MOVIEDB_API = "*apikey*";
+    private static final String MOVIEDB_API = "*api-key*";
 
     private ArrayAdapter<String> mMoviesAdapter;
     private final Context mContext;
+
+    private URL mUrl;
 
 
     public FetchMovieGalleryTask(Context context, ArrayAdapter<String> moviesAdapter) {
@@ -35,17 +37,20 @@ public class FetchMovieGalleryTask extends AsyncTask<String,Void,String[]> {
 
     @Override
     protected String[] doInBackground(String... params) {
-        if (params.length == 0) {
-            return null;
-        }
+//        if (params.length == 0) {
+//            return null;
+//        }
+        Log.d(LOG_TAG, "execute doingbackground()");
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
         String moviesJsonStr = null;
         String[] movies = null;
 
+        //TODO: use context to get sort by
         String sortBy = "popularity.desc";
 
+        try{
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("http")
                 .authority("api.themoviedb.org")
@@ -55,9 +60,8 @@ public class FetchMovieGalleryTask extends AsyncTask<String,Void,String[]> {
                 .appendQueryParameter("sort_by", sortBy)
                 .appendQueryParameter("api_key", MOVIEDB_API);
 
-        URL url = null;
-        try {
-            url = new URL(builder.build().toString());
+        URL url = new URL(builder.build().toString());
+            mUrl = url;
             Log.d(LOG_TAG, "Url: " + url.toString());
 
             // Create the request to themoviedb, and open the connection
@@ -115,6 +119,7 @@ public class FetchMovieGalleryTask extends AsyncTask<String,Void,String[]> {
             mMoviesAdapter.clear();
             mMoviesAdapter.addAll(strings);
         }
+
     }
 
     private String[] getMovieDataFromJson(String movieJsonStr)

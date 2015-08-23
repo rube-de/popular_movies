@@ -2,6 +2,7 @@
     <string name="app_name">Popular Movies</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_detail">Details</string>
 
     <!--actions from the actionbar-->
     <string name="action_settings">Settings</string>

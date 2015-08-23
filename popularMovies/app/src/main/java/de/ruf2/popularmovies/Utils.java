@@ -1,5 +1,7 @@
 package de.ruf2.popularmovies;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,10 +10,11 @@ import org.json.JSONObject;
  * Created by Bernhard Ruf on 23.08.2015.
  */
 public class Utils {
+    protected static final String TAG = "Utils";
     private static final String TMDB_RESULT = "results";
     private static final String TMDB_LANGUAGE = "original_language";
     private static final String TMDB_TITLE = "original_title";
-    private static final String TMDB_DESCRIPTION = "overview";
+    private static final String TMDB_OVERVIEW = "overview";
     private static final String TMDB_DATE = "release_date";
     private static final String TMDB_POSTER_PATH = "poster_path";
     private static final String TMDB_RATING = "vote_average";
@@ -26,9 +29,35 @@ public class Utils {
         return resultStr;
     }
 
-    public static String getPosterPath(String movie) throws JSONException{
+    public static String getPosterPath(String movie) {
+        try {
             JSONObject movieObject = new JSONObject(movie);
             String path = movieObject.getString(TMDB_POSTER_PATH);
             return path;
+        }catch (JSONException e) {
+            Log.e(TAG, "json reading failed: " + e);
+        }
+        return null;
+    }
+
+    public static String getTitle(String movie){
+        try{
+            JSONObject movieObject = new JSONObject(movie);
+            String title = movieObject.getString(TMDB_TITLE);
+            return title;
+       }catch (JSONException e) {
+            Log.e(TAG, "json reading failed: " + e);
+        }
+        return null;
+    }
+    public static String getOverview(String movie) {
+        try {
+            JSONObject movieObject = new JSONObject(movie);
+            String overview = movieObject.getString(TMDB_OVERVIEW);
+            return overview;
+        }catch (JSONException e) {
+            Log.e(TAG, "json reading failed: " + e);
+        }
+        return null;
     }
 }

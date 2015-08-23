@@ -3,6 +3,7 @@ package de.ruf2.popularmovies;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  * Created by Bernhard Ruf on 23.08.2015.
  */
 public class MovieGalleryFragment extends Fragment {
-
+    private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
     private ArrayAdapter<String> mMoviesAdapter;
 
     public MovieGalleryFragment(){
@@ -37,10 +38,10 @@ public class MovieGalleryFragment extends Fragment {
         setHasOptionsMenu(true);
 
         //Take data from source and populate grid view
-        mMoviesAdapter = new ArrayAdapter<String>(
+        mMoviesAdapter = new MovieArrayAdapter(
                 getActivity(),
                 R.layout.grid_item_movie,
-                R.id.grid_item_imageButton,
+                R.id.grid_item_imageView,
                 new ArrayList<String>());
 
         //get reference of grid view and attach adapter
@@ -83,6 +84,7 @@ public class MovieGalleryFragment extends Fragment {
     }
 
     public void updateMovieGallery(){
+        Log.d(LOG_TAG, "update gallery");
         FetchMovieGalleryTask fetchMovieGalleryTask = new FetchMovieGalleryTask(getActivity(), mMoviesAdapter);
         fetchMovieGalleryTask.execute();
     }
