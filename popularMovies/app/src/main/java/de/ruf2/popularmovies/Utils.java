@@ -20,7 +20,8 @@ public class Utils {
     private static final String TMDB_RATING = "vote_average";
 
     public static String[] createMovieStringArray(JSONArray moviesArray) throws JSONException{
-        String[] resultStr = new String[20];
+        Log.d(TAG, "lenght: " + moviesArray.length());
+        String[] resultStr = new String[moviesArray.length()];
         for (int i=0; i<moviesArray.length(); i++){
             JSONObject movieObject = moviesArray.getJSONObject(i);
 

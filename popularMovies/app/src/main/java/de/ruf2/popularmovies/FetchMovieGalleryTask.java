@@ -23,12 +23,11 @@ import java.net.URL;
  */
 public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
     private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
-    private static final String MOVIEDB_API = "**apikey from movie db**";
+    private static final String MOVIEDB_API_KEY = "**api_key**";
 
     private ArrayAdapter<String> mMoviesAdapter;
     private final Context mContext;
 
-    private URL mUrl;
 
 
     public FetchMovieGalleryTask(Context context, ArrayAdapter<String> moviesAdapter) {
@@ -38,15 +37,11 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
 
     @Override
     protected String[] doInBackground(String... params) {
-//        if (params.length == 0) {
-//            return null;
-//        }
         Log.d(LOG_TAG, "execute doingbackground()");
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
         String moviesJsonStr = null;
-        String[] movies = null;
 
         SharedPreferences settings = mContext.getSharedPreferences(MainActivity.PREFS_NAME, 0);
         String sortBy = settings.getString(MainActivity.ORDER_BY, "popularity.desc");
@@ -60,10 +55,9 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
                     .appendPath("discover")
                     .appendPath("movie")
                     .appendQueryParameter("sort_by", sortBy)
-                    .appendQueryParameter("api_key", MOVIEDB_API);
+                    .appendQueryParameter("api_key", MOVIEDB_API_KEY);
 
             URL url = new URL(builder.build().toString());
-            mUrl = url;
             Log.d(LOG_TAG, "Url: " + url.toString());
 
             // Create the request to themoviedb, and open the connection
