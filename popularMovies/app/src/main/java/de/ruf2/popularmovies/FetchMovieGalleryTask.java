@@ -1,6 +1,7 @@
 package de.ruf2.popularmovies;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -20,9 +21,9 @@ import java.net.URL;
 /**
  * Created by Bernhard Ruf on 23.08.2015.
  */
-public class FetchMovieGalleryTask extends AsyncTask<String,Void,String[]> {
+public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
     private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
-    private static final String MOVIEDB_API = "*api-key*";
+    private static final String MOVIEDB_API = "**apikey from movie db**";
 
     private ArrayAdapter<String> mMoviesAdapter;
     private final Context mContext;
@@ -47,20 +48,21 @@ public class FetchMovieGalleryTask extends AsyncTask<String,Void,String[]> {
         String moviesJsonStr = null;
         String[] movies = null;
 
-        //TODO: use context to get sort by
-        String sortBy = "popularity.desc";
+        SharedPreferences settings = mContext.getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        String sortBy = settings.getString(MainActivity.ORDER_BY, "popularity.desc");
+        Log.d(LOG_TAG, "order by: " + sortBy);
 
-        try{
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme("http")
-                .authority("api.themoviedb.org")
-                .appendPath("3")
-                .appendPath("discover")
-                .appendPath("movie")
-                .appendQueryParameter("sort_by", sortBy)
-                .appendQueryParameter("api_key", MOVIEDB_API);
+        try {
+            Uri.Builder builder = new Uri.Builder();
+            builder.scheme("http")
+                    .authority("api.themoviedb.org")
+                    .appendPath("3")
+                    .appendPath("discover")
+                    .appendPath("movie")
+                    .appendQueryParameter("sort_by", sortBy)
+                    .appendQueryParameter("api_key", MOVIEDB_API);
 
-        URL url = new URL(builder.build().toString());
+            URL url = new URL(builder.build().toString());
             mUrl = url;
             Log.d(LOG_TAG, "Url: " + url.toString());
 
@@ -88,10 +90,10 @@ public class FetchMovieGalleryTask extends AsyncTask<String,Void,String[]> {
             moviesJsonStr = buffer.toString();
             Log.d(LOG_TAG, moviesJsonStr);
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             return null;
-        }finally {
+        } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
@@ -113,9 +115,9 @@ public class FetchMovieGalleryTask extends AsyncTask<String,Void,String[]> {
     }
 
     @Override
-    protected void onPostExecute(String[] strings){
+    protected void onPostExecute(String[] strings) {
         super.onPostExecute(strings);
-        if(strings != null){
+        if (strings != null) {
             mMoviesAdapter.clear();
             mMoviesAdapter.addAll(strings);
         }

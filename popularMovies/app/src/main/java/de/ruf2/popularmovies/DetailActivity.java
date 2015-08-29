@@ -28,7 +28,7 @@ public class DetailActivity extends LifecycleLoggingActionBarActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
@@ -39,7 +39,6 @@ public class DetailActivity extends LifecycleLoggingActionBarActivity {
             fragmentTransaction.commit();
         }
     }
-
 
 
     public static class DetailFragment extends Fragment {
@@ -63,19 +62,21 @@ public class DetailActivity extends LifecycleLoggingActionBarActivity {
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
                 mMovieStr = intent.getStringExtra(Intent.EXTRA_TEXT);
 
-                    //set image
-                    ImageView imageView = (ImageView) rootView.findViewById(R.id.movie_detail_pic);
-                    String url =  "http://image.tmdb.org/t/p/w500/" + Utils.getPosterPath(mMovieStr);
-                    Picasso.with(getActivity()).load(url).into(imageView);
-                    //set title, overview
-                    ((TextView) rootView.findViewById(R.id.movie_detail_title)).setText(Utils.getTitle(mMovieStr));
-                    ((TextView) rootView.findViewById(R.id.movie_detail_overview)).setText(Utils.getOverview(mMovieStr));
+                //set image
+                ImageView imageView = (ImageView) rootView.findViewById(R.id.movie_detail_pic);
+                String url = "http://image.tmdb.org/t/p/w500/" + Utils.getPosterPath(mMovieStr);
+                Picasso.with(getActivity()).load(url).into(imageView);
+                //set title, overview
+                ((TextView) rootView.findViewById(R.id.movie_detail_title)).setText(Utils.getTitle(mMovieStr));
+                ((TextView) rootView.findViewById(R.id.movie_detail_release)).setText(Utils.getRelease(mMovieStr));
+                ((TextView) rootView.findViewById(R.id.movie_detail_rating)).setText(Utils.getRating(mMovieStr));
+                ((TextView) rootView.findViewById(R.id.movie_detail_overview)).setText(Utils.getOverview(mMovieStr));
             }
             return rootView;
         }
 
         @Override
-        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
             // Inflate the menu; this adds items to the action bar if it is present.
             inflater.inflate(R.menu.menu_detail, menu);
 
@@ -83,16 +84,16 @@ public class DetailActivity extends LifecycleLoggingActionBarActivity {
             mShareActionProvider = (ShareActionProvider)
                     MenuItemCompat.getActionProvider(shareItem);
 
-            if(mShareActionProvider != null){
+            if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareMovieIntent());
             }
         }
 
-        private Intent createShareMovieIntent(){
+        private Intent createShareMovieIntent() {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            shareIntent.putExtra(Intent.EXTRA_TEXT, "Movie: " + Utils.getTitle(mMovieStr) + SHARE_HASHTAG);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, "Movie: " + Utils.getTitle(mMovieStr) + "(" + Utils.getRelease(mMovieStr) + ")" + "|| Rating: " + Utils.getRating(mMovieStr) + " " + SHARE_HASHTAG);
             return shareIntent;
         }
     }

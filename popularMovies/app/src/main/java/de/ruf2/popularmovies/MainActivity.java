@@ -11,6 +11,8 @@ import de.ruf2.popularmovies.logging.LifecycleLoggingActionBarActivity;
 
 
 public class MainActivity extends LifecycleLoggingActionBarActivity {
+    public static final String PREFS_NAME = "MyPrefsFile";
+    public static final String ORDER_BY = "orderBy";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +41,11 @@ public class MainActivity extends LifecycleLoggingActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.action_settings:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 }

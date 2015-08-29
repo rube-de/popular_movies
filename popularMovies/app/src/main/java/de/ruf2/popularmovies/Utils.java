@@ -34,7 +34,7 @@ public class Utils {
             JSONObject movieObject = new JSONObject(movie);
             String path = movieObject.getString(TMDB_POSTER_PATH);
             return path;
-        }catch (JSONException e) {
+        }catch (Exception e) {
             Log.e(TAG, "json reading failed: " + e);
         }
         return null;
@@ -55,6 +55,38 @@ public class Utils {
             JSONObject movieObject = new JSONObject(movie);
             String overview = movieObject.getString(TMDB_OVERVIEW);
             return overview;
+        }catch (JSONException e) {
+            Log.e(TAG, "json reading failed: " + e);
+        }
+        return null;
+    }
+
+    public static String getRating(String movie) {
+        try {
+            JSONObject movieObject = new JSONObject(movie);
+            String rating = movieObject.getString(TMDB_RATING);
+            return rating;
+        }catch (JSONException e) {
+            Log.e(TAG, "json reading failed: " + e);
+        }
+        return null;
+    }
+
+    public static String getRelease(String movie) {
+        try {
+            JSONObject movieObject = new JSONObject(movie);
+            String release = movieObject.getString(TMDB_DATE);
+            return release;
+        }catch (JSONException e) {
+            Log.e(TAG, "json reading failed: " + e);
+        }
+        return null;
+    }
+    public static String getLanguage(String movie) {
+        try {
+            JSONObject movieObject = new JSONObject(movie);
+            String language = movieObject.getString(TMDB_LANGUAGE);
+            return language;
         }catch (JSONException e) {
             Log.e(TAG, "json reading failed: " + e);
         }

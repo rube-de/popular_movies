@@ -1,8 +1,9 @@
 package de.ruf2.popularmovies;
 
-import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,20 +21,24 @@ import java.util.ArrayList;
  * Created by Bernhard Ruf on 23.08.2015.
  */
 public class MovieGalleryFragment extends Fragment {
+    public static final String RELEASE_DATE_DESC = "release_date.desc";
+    public static final String VOTE_AVERAGE_DESC = "vote_average.desc";
+    public static final String POPULARITY_DESC = "popularity.desc";
+
     private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
     private ArrayAdapter<String> mMoviesAdapter;
 
-    public MovieGalleryFragment(){
+    public MovieGalleryFragment() {
     }
 
     @Override
-    public void onCreate(Bundle savedInstance){
+    public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         setHasOptionsMenu(true);
 
@@ -60,22 +65,35 @@ public class MovieGalleryFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         updateMovieGallery();
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //add menu options to action bar
         inflater.inflate(R.menu.moviegalleryfragment, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         //handle action bar item clicks
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_refresh:
+                updateMovieGallery();
+                return true;
+            case R.id.action_sort_by_release:
+                changeOrderBy(RELEASE_DATE_DESC);
+                updateMovieGallery();
+
+                return true;
+            case R.id.action_sort_by_rating:
+                changeOrderBy(VOTE_AVERAGE_DESC);
+                updateMovieGallery();
+                return true;
+            case R.id.action_sort_by_popularity:
+                changeOrderBy(POPULARITY_DESC);
                 updateMovieGallery();
                 return true;
             default:
@@ -83,7 +101,21 @@ public class MovieGalleryFragment extends Fragment {
         }
     }
 
-    public void updateMovieGallery(){
+    private void changeOrderBy(String orderBy) {
+        SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        // reverse ordering if user selects same order
+        // not in use due too much null values in json
+        //        if (settings.getString(MainActivity.ORDER_BY, POPULARITY_DESC).equals(orderBy)) {
+        //            orderBy = orderBy.substring(0, orderBy.length() - 5) + ".asc";
+        //        }
+        editor.putString(MainActivity.ORDER_BY, orderBy);
+        Log.d(LOG_TAG, "order by: " + orderBy);
+        editor.commit();
+    }
+
+    public void updateMovieGallery() {
         Log.d(LOG_TAG, "update gallery");
         FetchMovieGalleryTask fetchMovieGalleryTask = new FetchMovieGalleryTask(getActivity(), mMoviesAdapter);
         fetchMovieGalleryTask.execute();
