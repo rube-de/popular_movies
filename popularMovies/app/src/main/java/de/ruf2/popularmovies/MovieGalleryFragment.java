@@ -21,12 +21,14 @@ import java.util.ArrayList;
  * Created by Bernhard Ruf on 23.08.2015.
  */
 public class MovieGalleryFragment extends Fragment {
+    public static final String MOVIES_KEY = "moviesKey";
     public static final String RELEASE_DATE_DESC = "release_date.desc";
     public static final String VOTE_AVERAGE_DESC = "vote_average.desc";
     public static final String POPULARITY_DESC = "popularity.desc";
 
     private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
     private ArrayAdapter<String> mMoviesAdapter;
+    private ArrayList<String> mListOfMovies;
 
     public MovieGalleryFragment() {
     }
@@ -34,6 +36,9 @@ public class MovieGalleryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        if(savedInstance != null){
+            mListOfMovies = (ArrayList<String>) savedInstance.get(MOVIES_KEY);
+        }
         setHasOptionsMenu(true);
     }
 
@@ -42,12 +47,15 @@ public class MovieGalleryFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         setHasOptionsMenu(true);
 
+        if(mListOfMovies==null){
+            mListOfMovies = new ArrayList<String>();
+        }
         //Take data from source and populate grid view
         mMoviesAdapter = new MovieArrayAdapter(
                 getActivity(),
                 R.layout.grid_item_movie,
                 R.id.grid_item_imageView,
-                new ArrayList<String>());
+                mListOfMovies);
 
         //get reference of grid view and attach adapter
         GridView gridView = (GridView) rootView.findViewById(R.id.gridView_movies);
@@ -121,4 +129,9 @@ public class MovieGalleryFragment extends Fragment {
         fetchMovieGalleryTask.execute();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(MOVIES_KEY, mListOfMovies);
+    }
 }

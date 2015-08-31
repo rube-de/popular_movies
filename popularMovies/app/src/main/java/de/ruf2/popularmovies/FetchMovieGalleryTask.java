@@ -23,7 +23,7 @@ import java.net.URL;
  */
 public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
     private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
-    private static final String MOVIEDB_API_KEY = "**api_key**";
+    private static final String MOVIEDB_API_KEY = "***API-KEY***";
 
     private ArrayAdapter<String> mMoviesAdapter;
     private final Context mContext;

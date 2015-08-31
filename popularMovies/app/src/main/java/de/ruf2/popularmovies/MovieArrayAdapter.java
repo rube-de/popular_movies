@@ -30,7 +30,7 @@ public class MovieArrayAdapter extends ArrayAdapter<String> {
         String movieStr = getItem(position);
         String url = "http://image.tmdb.org/t/p/w185/" + Utils.getPosterPath(movieStr);
         //Log.d("adapter", "url: " + url);
-        Picasso.with(mContext).load(url).error(R.mipmap.error).into(view);
+        Picasso.with(mContext).load(url).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(view);
 
         return view;
     }

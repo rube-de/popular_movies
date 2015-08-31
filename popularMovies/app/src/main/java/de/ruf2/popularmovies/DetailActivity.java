@@ -65,7 +65,7 @@ public class DetailActivity extends LifecycleLoggingActionBarActivity {
                 //set image
                 ImageView imageView = (ImageView) rootView.findViewById(R.id.movie_detail_pic);
                 String url = "http://image.tmdb.org/t/p/w500/" + Utils.getPosterPath(mMovieStr);
-                Picasso.with(getActivity()).load(url).into(imageView);
+                Picasso.with(getActivity()).load(url).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(imageView);
                 //set title, overview
                 ((TextView) rootView.findViewById(R.id.movie_detail_title)).setText(Utils.getTitle(mMovieStr));
                 ((TextView) rootView.findViewById(R.id.movie_detail_release)).setText(Utils.getRelease(mMovieStr));
