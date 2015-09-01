@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import de.ruf2.popularmovies.logging.LifecycleLoggingActionBarActivity;
 
 /**
@@ -25,6 +27,8 @@ import de.ruf2.popularmovies.logging.LifecycleLoggingActionBarActivity;
  */
 public class DetailActivity extends LifecycleLoggingActionBarActivity {
     protected final String TAG = getClass().getSimpleName();
+
+
 
 
     @Override
@@ -43,6 +47,11 @@ public class DetailActivity extends LifecycleLoggingActionBarActivity {
 
     public static class DetailFragment extends Fragment {
         protected final String TAG = getClass().getSimpleName();
+        @Bind(R.id.movie_detail_title) TextView mTitle;
+        @Bind(R.id.movie_detail_release) TextView mRelease;
+        @Bind(R.id.movie_detail_rating) TextView mRating;
+        @Bind(R.id.movie_detail_overview) TextView mOverview;
+        @Bind(R.id.movie_detail_pic) ImageView mImage;
 
         private ShareActionProvider mShareActionProvider;
         private static String SHARE_HASHTAG = " #nanodegree";
@@ -58,21 +67,25 @@ public class DetailActivity extends LifecycleLoggingActionBarActivity {
                                  Bundle savedInstanceState) {
             final Intent intent = getActivity().getIntent();
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+            ButterKnife.bind(this, rootView);
 
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
                 mMovieStr = intent.getStringExtra(Intent.EXTRA_TEXT);
 
                 //set image
-                ImageView imageView = (ImageView) rootView.findViewById(R.id.movie_detail_pic);
                 String url = "http://image.tmdb.org/t/p/w500/" + Utils.getPosterPath(mMovieStr);
-                Picasso.with(getActivity()).load(url).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(imageView);
+                Picasso.with(getActivity()).load(url).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(mImage);
                 //set title, overview
-                ((TextView) rootView.findViewById(R.id.movie_detail_title)).setText(Utils.getTitle(mMovieStr));
-                ((TextView) rootView.findViewById(R.id.movie_detail_release)).setText(Utils.getRelease(mMovieStr));
-                ((TextView) rootView.findViewById(R.id.movie_detail_rating)).setText(Utils.getRating(mMovieStr));
-                ((TextView) rootView.findViewById(R.id.movie_detail_overview)).setText(Utils.getOverview(mMovieStr));
+                mTitle.setText(Utils.getTitle(mMovieStr));
+                mRelease.setText(Utils.getRelease(mMovieStr));
+                mRating.setText(Utils.getRating(mMovieStr));
+                mOverview.setText(Utils.getOverview(mMovieStr));
             }
             return rootView;
+        }
+        @Override public void onDestroyView() {
+            super.onDestroyView();
+            ButterKnife.unbind(this);
         }
 
         @Override

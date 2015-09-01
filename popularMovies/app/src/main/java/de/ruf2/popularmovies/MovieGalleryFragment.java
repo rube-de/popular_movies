@@ -17,6 +17,9 @@ import android.widget.GridView;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by Bernhard Ruf on 23.08.2015.
  */
@@ -29,6 +32,9 @@ public class MovieGalleryFragment extends Fragment {
     private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
     private ArrayAdapter<String> mMoviesAdapter;
     private ArrayList<String> mListOfMovies;
+
+    @Bind(R.id.gridView_movies)
+    GridView mGridView;
 
     public MovieGalleryFragment() {
     }
@@ -45,6 +51,7 @@ public class MovieGalleryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
 
         if(mListOfMovies==null){
@@ -58,10 +65,9 @@ public class MovieGalleryFragment extends Fragment {
                 mListOfMovies);
 
         //get reference of grid view and attach adapter
-        GridView gridView = (GridView) rootView.findViewById(R.id.gridView_movies);
-        gridView.setAdapter(mMoviesAdapter);
+        mGridView.setAdapter(mMoviesAdapter);
         //set onclick listener to get to details screen
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String movie = mMoviesAdapter.getItem(position);
@@ -76,6 +82,10 @@ public class MovieGalleryFragment extends Fragment {
     public void onStart() {
         super.onStart();
         updateMovieGallery();
+    }
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     @Override
