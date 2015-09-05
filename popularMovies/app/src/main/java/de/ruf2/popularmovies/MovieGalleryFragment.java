@@ -42,7 +42,7 @@ public class MovieGalleryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        if(savedInstance != null){
+        if (savedInstance != null) {
             mListOfMovies = (ArrayList<String>) savedInstance.get(MOVIES_KEY);
         }
         setHasOptionsMenu(true);
@@ -54,7 +54,7 @@ public class MovieGalleryFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
 
-        if(mListOfMovies==null){
+        if (mListOfMovies == null) {
             mListOfMovies = new ArrayList<String>();
         }
         //Take data from source and populate grid view
@@ -63,7 +63,7 @@ public class MovieGalleryFragment extends Fragment {
                 R.layout.grid_item_movie,
                 R.id.grid_item_imageView,
                 mListOfMovies);
-
+        updateMovieGallery();
         //get reference of grid view and attach adapter
         mGridView.setAdapter(mMoviesAdapter);
         //set onclick listener to get to details screen
@@ -81,9 +81,10 @@ public class MovieGalleryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        updateMovieGallery();
     }
-    @Override public void onDestroyView() {
+
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
@@ -140,7 +141,7 @@ public class MovieGalleryFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState){
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList(MOVIES_KEY, mListOfMovies);
     }

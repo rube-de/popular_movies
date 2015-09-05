@@ -23,14 +23,14 @@ import java.net.URL;
  */
 public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
     private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
-    private static final String MOVIEDB_API_KEY = "***API-KEY***";
+    private static final String MOVIEDB_API_KEY = "*API-KEY*";
 
     private ArrayAdapter<String> mMoviesAdapter;
     private final Context mContext;
 
 
 
-    public FetchMovieGalleryTask(Context context, ArrayAdapter<String> moviesAdapter) {
+    public FetchMovieGalleryTask(Context context, ArrayAdapter<String> moviesAdapter  ) {
         mContext = context;
         mMoviesAdapter = moviesAdapter;
     }
@@ -40,7 +40,6 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
         Log.d(LOG_TAG, "execute doingbackground()");
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
-
         String moviesJsonStr = null;
 
         SharedPreferences settings = mContext.getSharedPreferences(MainActivity.PREFS_NAME, 0);
@@ -115,7 +114,6 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
             mMoviesAdapter.clear();
             mMoviesAdapter.addAll(strings);
         }
-
     }
 
     private String[] getMovieDataFromJson(String movieJsonStr)
