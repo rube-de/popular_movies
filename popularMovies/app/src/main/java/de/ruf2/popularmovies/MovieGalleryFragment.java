@@ -29,7 +29,7 @@ public class MovieGalleryFragment extends Fragment {
     public static final String VOTE_AVERAGE_DESC = "vote_average.desc";
     public static final String POPULARITY_DESC = "popularity.desc";
 
-    private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
+    private String TAG = FetchMovieGalleryTask.class.getSimpleName();
     private ArrayAdapter<String> mMoviesAdapter;
     private ArrayList<String> mListOfMovies;
 
@@ -63,7 +63,7 @@ public class MovieGalleryFragment extends Fragment {
                 R.layout.grid_item_movie,
                 R.id.grid_item_imageView,
                 mListOfMovies);
-        updateMovieGallery();
+
         //get reference of grid view and attach adapter
         mGridView.setAdapter(mMoviesAdapter);
         //set onclick listener to get to details screen
@@ -81,6 +81,9 @@ public class MovieGalleryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        if (mMoviesAdapter.isEmpty()) {
+            updateMovieGallery();
+        }
     }
 
     @Override
@@ -130,12 +133,12 @@ public class MovieGalleryFragment extends Fragment {
         //            orderBy = orderBy.substring(0, orderBy.length() - 5) + ".asc";
         //        }
         editor.putString(MainActivity.ORDER_BY, orderBy);
-        Log.d(LOG_TAG, "order by: " + orderBy);
+        Log.d(TAG, "order by: " + orderBy);
         editor.commit();
     }
 
     public void updateMovieGallery() {
-        Log.d(LOG_TAG, "update gallery");
+        Log.d(TAG, "update gallery");
         FetchMovieGalleryTask fetchMovieGalleryTask = new FetchMovieGalleryTask(getActivity(), mMoviesAdapter);
         fetchMovieGalleryTask.execute();
     }
