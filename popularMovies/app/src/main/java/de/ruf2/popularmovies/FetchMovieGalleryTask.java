@@ -17,28 +17,28 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import de.ruf2.popularmovies.utils.Utils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Bernhard Ruf on 23.08.2015.
  */
-public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
+public class FetchMovieGalleryTask extends AsyncTask<String, Void, List<MovieData>> {
     private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
     private static final String MOVIEDB_API_KEY = "68b734b65cf6c3085884bddee4164bdf";
 
-    private ArrayAdapter<String> mMoviesAdapter;
+    private ArrayAdapter<MovieData> mMoviesAdapter;
     private final Context mContext;
 
 
 
-    public FetchMovieGalleryTask(Context context, ArrayAdapter<String> moviesAdapter  ) {
+    public FetchMovieGalleryTask(Context context, ArrayAdapter<MovieData> moviesAdapter  ) {
         mContext = context;
         mMoviesAdapter = moviesAdapter;
     }
 
     @Override
-    protected String[] doInBackground(String... params) {
+    protected List<MovieData> doInBackground(String... params) {
         Log.d(LOG_TAG, "execute doingbackground()");
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -110,7 +110,7 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
-    protected void onPostExecute(String[] strings) {
+    protected void onPostExecute(List<MovieData> strings) {
         super.onPostExecute(strings);
         if (strings != null) {
             mMoviesAdapter.clear();
@@ -118,7 +118,7 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
         }
     }
 
-    private String[] getMovieDataFromJson(String movieJsonStr)
+    private List<MovieData> getMovieDataFromJson(String movieJsonStr)
             throws JSONException {
 
         final String TMDB_RESULT = "results";
@@ -126,8 +126,11 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, String[]> {
         JSONObject movieJson = new JSONObject(movieJsonStr);
         JSONArray moviesArray = movieJson.getJSONArray(TMDB_RESULT);
 
-        String[] resultStr = Utils.createMovieStringArray(moviesArray);
-
-        return resultStr;
+        List<MovieData> movieList = new ArrayList<>();
+        for (int i=0; i<moviesArray.length(); i++){
+            JSONObject movieObject = moviesArray.getJSONObject(i);
+            movieList.add(MovieData.fromJson(movieObject));
+        }
+        return movieList;
     }
 }

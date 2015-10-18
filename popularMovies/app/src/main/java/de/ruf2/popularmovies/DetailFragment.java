@@ -19,7 +19,6 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import de.ruf2.popularmovies.utils.Utils;
 
 /**
  * Created by Bernhard Ruf on 18.10.2015.
@@ -43,6 +42,7 @@ public class DetailFragment extends Fragment {
     private static String SHARE_HASHTAG = " #nanodegree";
 
     private String mMovieStr;
+    private MovieData mMovie;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -55,17 +55,17 @@ public class DetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
 
-        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            mMovieStr = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (intent != null && intent.hasExtra(MovieGalleryFragment.EXTRA_MOVIE)) {
+            mMovie = intent.getParcelableExtra(MovieGalleryFragment.EXTRA_MOVIE);
 
             //set image
-            String url = "http://image.tmdb.org/t/p/w500/" + Utils.getPosterPath(mMovieStr);
+            String url = "http://image.tmdb.org/t/p/w500/" + mMovie.getPath();
             Picasso.with(getActivity()).load(url).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(mImage);
             //set title, overview
-            mTitle.setText(Utils.getTitle(mMovieStr));
-            mRelease.setText(Utils.getRelease(mMovieStr));
-            mRating.setText(Utils.getRating(mMovieStr));
-            mOverview.setText(Utils.getOverview(mMovieStr));
+            mTitle.setText(mMovie.getTitle());
+            mRelease.setText(mMovie.getReleaseDate());
+            mRating.setText(mMovie.getVotingAverage());
+            mOverview.setText(mMovie.getDescription());
         }
         return rootView;
     }
@@ -94,7 +94,7 @@ public class DetailFragment extends Fragment {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "Movie: " + Utils.getTitle(mMovieStr) + "(" + Utils.getRelease(mMovieStr) + ")" + "|| Rating: " + Utils.getRating(mMovieStr) + " " + SHARE_HASHTAG);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "Movie: " + mMovie.getTitle() + "(" + mMovie.getReleaseDate() + ")" + "|| Rating: " + mMovie.getVotingAverage() + " " + SHARE_HASHTAG);
         return shareIntent;
     }
 }

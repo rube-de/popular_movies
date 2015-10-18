@@ -10,15 +10,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import de.ruf2.popularmovies.utils.Utils;
-
 /**
  * Created by Bernhard Ruf on 23.08.2015.
  */
-public class MovieArrayAdapter extends ArrayAdapter<String> {
+public class MovieArrayAdapter extends ArrayAdapter<MovieData> {
     Context mContext;
 
-    public MovieArrayAdapter(Context context, int resource, int textViewResourceId, List<String> objects) {
+    public MovieArrayAdapter(Context context, int resource, int textViewResourceId, List<MovieData> objects) {
         super(context, resource, textViewResourceId, objects);
         mContext = context;
     }
@@ -29,12 +27,12 @@ public class MovieArrayAdapter extends ArrayAdapter<String> {
         if (view == null) {
             view = new ImageView(mContext);
             view.setAdjustViewBounds(true);
-            view.setPadding(0,0,0,0);
+            view.setPadding(0, 0, 0, 0);
         }
 
-        String movieStr = getItem(position);
-        String url = "http://image.tmdb.org/t/p/w185/" + Utils.getPosterPath(movieStr);
-        //Log.d("adapter", "url: " + url);
+        MovieData movie = getItem(position);
+        String url = "http://image.tmdb.org/t/p/w185/" + movie.getPath();
+//        Log.d("adapter", "url: " + url);
         Picasso.with(mContext).load(url).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(view);
 
         return view;

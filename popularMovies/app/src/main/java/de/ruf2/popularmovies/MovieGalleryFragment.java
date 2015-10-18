@@ -25,13 +25,14 @@ import butterknife.ButterKnife;
  */
 public class MovieGalleryFragment extends Fragment {
     public static final String MOVIES_KEY = "moviesKey";
+    public static final String EXTRA_MOVIE = "movie";
     public static final String RELEASE_DATE_DESC = "release_date.desc";
     public static final String VOTE_AVERAGE_DESC = "vote_average.desc";
     public static final String POPULARITY_DESC = "popularity.desc";
 
     private String TAG = FetchMovieGalleryTask.class.getSimpleName();
-    private ArrayAdapter<String> mMoviesAdapter;
-    private ArrayList<String> mListOfMovies;
+    private ArrayAdapter<MovieData> mMoviesAdapter;
+    private ArrayList<MovieData> mListOfMovies;
 
     @Bind(R.id.gridView_movies)
     GridView mGridView;
@@ -43,7 +44,7 @@ public class MovieGalleryFragment extends Fragment {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         if (savedInstance != null) {
-            mListOfMovies = (ArrayList<String>) savedInstance.get(MOVIES_KEY);
+            mListOfMovies = (ArrayList<MovieData>) savedInstance.get(MOVIES_KEY);
         }
         setHasOptionsMenu(true);
     }
@@ -55,7 +56,7 @@ public class MovieGalleryFragment extends Fragment {
         setHasOptionsMenu(true);
 
         if (mListOfMovies == null) {
-            mListOfMovies = new ArrayList<String>();
+            mListOfMovies = new ArrayList<MovieData>();
         }
         //Take data from source and populate grid view
         mMoviesAdapter = new MovieArrayAdapter(
@@ -70,8 +71,8 @@ public class MovieGalleryFragment extends Fragment {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String movie = mMoviesAdapter.getItem(position);
-                Intent detailsIntent = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, movie);
+                MovieData movie = mMoviesAdapter.getItem(position);
+                Intent detailsIntent = new Intent(getActivity(), DetailActivity.class).putExtra(EXTRA_MOVIE, movie);
                 startActivity(detailsIntent);
             }
         });
@@ -146,6 +147,6 @@ public class MovieGalleryFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList(MOVIES_KEY, mListOfMovies);
+        outState.putParcelableArrayList(MOVIES_KEY, mListOfMovies);
     }
 }
