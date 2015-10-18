@@ -10,6 +10,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import de.ruf2.popularmovies.utils.Utils;
+
 /**
  * Created by Bernhard Ruf on 23.08.2015.
  */
@@ -26,7 +28,10 @@ public class MovieArrayAdapter extends ArrayAdapter<String> {
         ImageView view = (ImageView) convertView;
         if (view == null) {
             view = new ImageView(mContext);
+            view.setAdjustViewBounds(true);
+            view.setPadding(0,0,0,0);
         }
+
         String movieStr = getItem(position);
         String url = "http://image.tmdb.org/t/p/w185/" + Utils.getPosterPath(movieStr);
         //Log.d("adapter", "url: " + url);

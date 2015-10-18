@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.ruf2.popularmovies.utils.Utils;
 
 /**
  * Created by Bernhard Ruf on 18.10.2015.

@@ -1,4 +1,4 @@
-package de.ruf2.popularmovies;
+package de.ruf2.popularmovies.utils;
 
 import android.util.Log;
 
