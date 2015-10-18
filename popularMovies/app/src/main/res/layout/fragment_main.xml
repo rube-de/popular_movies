@@ -12,10 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/gridView_movies"
-        android:columnWidth="80dp"
+        android:columnWidth="55dp"
         android:numColumns="auto_fit"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
         android:gravity="center"
         android:stretchMode="columnWidth"/>
 
