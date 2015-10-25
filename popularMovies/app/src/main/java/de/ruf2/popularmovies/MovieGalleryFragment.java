@@ -56,7 +56,7 @@ public class MovieGalleryFragment extends Fragment {
         setHasOptionsMenu(true);
 
         if (mListOfMovies == null) {
-            mListOfMovies = new ArrayList<MovieData>();
+            mListOfMovies = new ArrayList<>();
         }
         //Take data from source and populate grid view
         mMoviesAdapter = new MovieArrayAdapter(

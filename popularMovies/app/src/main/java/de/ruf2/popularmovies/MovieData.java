@@ -18,7 +18,7 @@ public class MovieData implements Parcelable {
     private static final String TMDB_POSTER_PATH = "poster_path";
     private static final String TMDB_RATING = "vote_average";
 
-    private long id;
+    private String id;
     private String title;
     private String description;
     private String releaseDate;
@@ -28,7 +28,7 @@ public class MovieData implements Parcelable {
 
     private int mData;
 
-    public MovieData(Long id, String title, String description, String releaseDate, String votingAverage, String language, String path) {
+    public MovieData(String id, String title, String description, String releaseDate, String votingAverage, String language, String path) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -86,8 +86,13 @@ public class MovieData implements Parcelable {
         this.path = path;
     }
 
+    public String getId() {
+        return id;
+    }
+
     protected MovieData(Parcel in) {
         mData = in.readInt();
+        id = in.readString();
         title = in.readString();
         description = in.readString();
         releaseDate = in.readString();
@@ -104,6 +109,7 @@ public class MovieData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mData);
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeString(releaseDate);
@@ -127,7 +133,7 @@ public class MovieData implements Parcelable {
 
     public static MovieData fromJson(JSONObject jsonObject) throws JSONException {
         return new MovieData(
-                jsonObject.getLong(TMDB_ID),
+                jsonObject.getString(TMDB_ID),
                 jsonObject.getString(TMDB_TITLE),
                 jsonObject.getString(TMDB_OVERVIEW),
                 jsonObject.getString(TMDB_DATE),

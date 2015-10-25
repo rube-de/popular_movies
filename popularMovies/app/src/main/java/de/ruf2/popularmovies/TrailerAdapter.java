@@ -1,47 +1,61 @@
 package de.ruf2.popularmovies;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by Bernhard Ruf on 17.10.2015.
  */
-public class TrailerAdapter extends CursorAdapter {
+public class TrailerAdapter extends ArrayAdapter<TrailerData> {
+    @Bind(R.id.list_item_trailer_icon)
+            ImageView mImageView;
+    @Bind(R.id.list_item_trailer_name)
+            TextView mTextView;
+    Context mContext;
 
-    public TrailerAdapter(Context context, Cursor c, int flags){
-        super(context, c, flags);
+
+    public TrailerAdapter(Context context, int resource, int textViewResourceId, List<TrailerData> objects) {
+        super(context, resource, textViewResourceId, objects);
+        mContext = context;
     }
 
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view=  LayoutInflater.from(context).inflate(R.layout.list_item_trailer, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        view.setTag(viewHolder);
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = convertView;
+        ViewHolder holder;
+        if (view != null) {
+            holder = (ViewHolder) view.getTag();
+        } else {
+            view = LayoutInflater.from(mContext).inflate(R.layout.list_item_trailer, parent, false);
+            holder = new ViewHolder(view);
+            view.setTag(holder);
+        }
+
+        ButterKnife.bind(view);
+        TrailerData trailer = getItem(position);
+        holder.iconView.setImageResource(R.mipmap.ic_play);
+        holder.trailerText.setText(trailer.getName());
         return view;
     }
 
-    @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder holder = (ViewHolder) view.getTag();
-
-        holder.trailerIconView.setImageResource(R.mipmap.ic_play);
-        holder.trailerNameView.setText("Trailer 1");
-
-    }
-
-    public static class ViewHolder {
-        @Bind(R.id.list_item_trailer_icon) ImageView trailerIconView;
-        @Bind(R.id.list_item_trailer_name) TextView trailerNameView;
+    static class ViewHolder {
+        @Bind(R.id.list_item_trailer_icon)
+        ImageView iconView;
+        @Bind(R.id.list_item_trailer_name)
+        TextView trailerText;
 
         public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
         }
     }
 }
