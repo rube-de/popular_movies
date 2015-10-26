@@ -20,6 +20,7 @@
     <string name="detail_language">Org. Language</string>
     <string name="detail_rating">Avg. Rating</string>
     <string name="detail_overview">Overview</string>
-    <string name="detail_trailer">Trailer</string>
+    <string name="detail_trailer">Trailers</string>
+    <string name="detail_review">Reviews</string>
 
 </resources>

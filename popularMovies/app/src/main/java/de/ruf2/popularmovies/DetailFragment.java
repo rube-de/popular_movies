@@ -26,6 +26,11 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.ruf2.popularmovies.adapter.ReviewAdapter;
+import de.ruf2.popularmovies.adapter.TrailerAdapter;
+import de.ruf2.popularmovies.data.MovieData;
+import de.ruf2.popularmovies.data.ReviewData;
+import de.ruf2.popularmovies.data.TrailerData;
 
 /**
  * Created by Bernhard Ruf on 18.10.2015.
@@ -33,6 +38,8 @@ import butterknife.ButterKnife;
 public class DetailFragment extends Fragment {
     protected final String TAG = getClass().getSimpleName();
     public static final String TRAILER_KEY = "trailer";
+    public static final String REVIEW_KEY = "review";
+
 
     @Bind(R.id.movie_detail_title)
     TextView mTitle;
@@ -46,6 +53,8 @@ public class DetailFragment extends Fragment {
     ImageView mImage;
     @Bind(R.id.listview_trailers)
     ListView mTrailersListView;
+    @Bind(R.id.listview_reviews)
+    ListView mReviewListView;
 
     private ShareActionProvider mShareActionProvider;
     private static String SHARE_HASHTAG = " #nanodegree";
@@ -53,6 +62,9 @@ public class DetailFragment extends Fragment {
     private MovieData mMovie;
     private ArrayAdapter<TrailerData> mTrailerAdapter;
     private ArrayList<TrailerData> mListOfTrailers;
+    private ArrayAdapter<ReviewData> mReviewAdapter;
+    private ArrayList<ReviewData> mListOfReviews;
+
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -63,6 +75,7 @@ public class DetailFragment extends Fragment {
         super.onCreate(savedInstance);
         if (savedInstance != null) {
             mListOfTrailers = (ArrayList<TrailerData>) savedInstance.get(TRAILER_KEY);
+            mListOfReviews = (ArrayList<ReviewData>) savedInstance.get(REVIEW_KEY);
         }
         setHasOptionsMenu(true);
     }
@@ -103,14 +116,36 @@ public class DetailFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     TrailerData trailer = mTrailerAdapter.getItem(position);
-                    try{
+                    try {
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailer.getKey()));
                         startActivity(intent);
-                    }catch (ActivityNotFoundException ex){
-                        Intent intent=new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("http://www.youtube.com/watch?v="+trailer.getKey()));
+                    } catch (ActivityNotFoundException ex) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("http://www.youtube.com/watch?v=" + trailer.getKey()));
                         startActivity(intent);
                     }
+                }
+            });
+
+            if (mListOfReviews == null){
+                mListOfReviews = new ArrayList<>();
+            }
+            mReviewAdapter = new ReviewAdapter(
+                    getActivity(),
+                    R.layout.list_item_review,
+                    R.id.listview_reviews,
+                    mListOfReviews);
+
+            if (mReviewAdapter.isEmpty()) {
+                updateReviewList(mMovie);
+            }
+            mReviewListView.setAdapter(mReviewAdapter);
+            mReviewListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    ReviewData review = mReviewAdapter.getItem(position);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(review.getUrl()));
+                        startActivity(intent);
                 }
             });
         }
@@ -162,6 +197,12 @@ public class DetailFragment extends Fragment {
         Log.d(TAG, "update trailers");
         FetchTrailerListTask fetchTrailerListTask = new FetchTrailerListTask(getActivity(),mTrailerAdapter);
         fetchTrailerListTask.execute(movieData);
+
+    }
+    private void updateReviewList(MovieData movieData) {
+        Log.d(TAG, "update trailers");
+        FetchReviewListTask fetchReviewListTask = new FetchReviewListTask(getActivity(),mReviewAdapter);
+        fetchReviewListTask.execute(movieData);
 
     }
 }

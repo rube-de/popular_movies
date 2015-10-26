@@ -1,7 +1,6 @@
 package de.ruf2.popularmovies;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -21,43 +20,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.ruf2.popularmovies.data.MovieData;
+import de.ruf2.popularmovies.data.ReviewData;
 import de.ruf2.popularmovies.utils.Utils;
 
 /**
- * Created by Bernhard Ruf on 23.08.2015.
+ * Created by Bernhard Ruf on 25.10.2015.
  */
-public class FetchMovieGalleryTask extends AsyncTask<String, Void, List<MovieData>> {
-    private String LOG_TAG = FetchMovieGalleryTask.class.getSimpleName();
-
-    private ArrayAdapter<MovieData> mMoviesAdapter;
+public class FetchReviewListTask extends AsyncTask<MovieData,Void,List<ReviewData>> {
+    private final String LOG_TAG = FetchTrailerListTask.class.getSimpleName();
+    private ArrayAdapter<ReviewData> mReviewAdapter;
     private final Context mContext;
 
-
-
-    public FetchMovieGalleryTask(Context context, ArrayAdapter<MovieData> moviesAdapter  ) {
-        mContext = context;
-        mMoviesAdapter = moviesAdapter;
+    public FetchReviewListTask(Context mContext, ArrayAdapter<ReviewData> mReviewAdapter) {
+        this.mReviewAdapter = mReviewAdapter;
+        this.mContext = mContext;
     }
 
     @Override
-    protected List<MovieData> doInBackground(String... params) {
+    protected List<ReviewData> doInBackground(MovieData... params) {
         Log.d(LOG_TAG, "execute doingbackground()");
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
-        String moviesJsonStr = null;
-
-        SharedPreferences settings = mContext.getSharedPreferences(MainActivity.PREFS_NAME, 0);
-        String sortBy = settings.getString(MainActivity.ORDER_BY, "popularity.desc");
-        Log.d(LOG_TAG, "order by: " + sortBy);
-
+        String trailerJsonStr = null;
+        MovieData movieDate = params[0];
         try {
             Uri.Builder builder = new Uri.Builder();
             builder.scheme("http")
                     .authority("api.themoviedb.org")
                     .appendPath("3")
-                    .appendPath("discover")
                     .appendPath("movie")
-                    .appendQueryParameter("sort_by", sortBy)
+                    .appendPath(movieDate.getId())
+                    .appendPath("reviews")
                     .appendQueryParameter("api_key", Utils.getMoviedbApiKey());
 
             URL url = new URL(builder.build().toString());
@@ -84,8 +77,8 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, List<MovieDat
             if (buffer.length() == 0) {
                 return null;
             }
-            moviesJsonStr = buffer.toString();
-            Log.d(LOG_TAG, moviesJsonStr);
+            trailerJsonStr = buffer.toString();
+            Log.d(LOG_TAG, trailerJsonStr);
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
@@ -103,7 +96,7 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, List<MovieDat
             }
         }
         try {
-            return getMovieDataFromJson(moviesJsonStr);
+            return getTrailerDataFromJson(trailerJsonStr);
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Error", e);
             e.printStackTrace();
@@ -112,27 +105,27 @@ public class FetchMovieGalleryTask extends AsyncTask<String, Void, List<MovieDat
     }
 
     @Override
-    protected void onPostExecute(List<MovieData> strings) {
+    protected void onPostExecute(List<ReviewData> strings) {
         super.onPostExecute(strings);
         if (strings != null) {
-            mMoviesAdapter.clear();
-            mMoviesAdapter.addAll(strings);
+            mReviewAdapter.clear();
+            mReviewAdapter.addAll(strings);
         }
     }
 
-    private List<MovieData> getMovieDataFromJson(String movieJsonStr)
+    private List<ReviewData> getTrailerDataFromJson(String reviewJsonStr)
             throws JSONException {
 
         final String TMDB_RESULT = "results";
 
-        JSONObject movieJson = new JSONObject(movieJsonStr);
-        JSONArray moviesArray = movieJson.getJSONArray(TMDB_RESULT);
+        JSONObject reviewJson = new JSONObject(reviewJsonStr);
+        JSONArray reviewArray = reviewJson.getJSONArray(TMDB_RESULT);
 
-        List<MovieData> movieList = new ArrayList<>();
-        for (int i=0; i<moviesArray.length(); i++){
-            JSONObject movieObject = moviesArray.getJSONObject(i);
-            movieList.add(MovieData.fromJson(movieObject));
+        List<ReviewData> reviewList = new ArrayList<>();
+        for (int i = 0; i < reviewArray.length(); i++) {
+            JSONObject reviewObject = reviewArray.getJSONObject(i);
+            reviewList.add(ReviewData.fromJson(reviewObject));
         }
-        return movieList;
+        return reviewList;
     }
 }

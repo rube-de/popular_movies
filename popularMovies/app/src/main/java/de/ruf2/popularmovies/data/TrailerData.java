@@ -1,4 +1,4 @@
-package de.ruf2.popularmovies;
+package de.ruf2.popularmovies.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

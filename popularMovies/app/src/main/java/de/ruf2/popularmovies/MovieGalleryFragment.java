@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.ruf2.popularmovies.adapter.MovieArrayAdapter;
+import de.ruf2.popularmovies.data.MovieData;
 
 /**
  * Created by Bernhard Ruf on 23.08.2015.

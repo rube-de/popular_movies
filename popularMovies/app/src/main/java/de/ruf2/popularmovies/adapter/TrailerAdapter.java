@@ -1,4 +1,4 @@
-package de.ruf2.popularmovies;
+package de.ruf2.popularmovies.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,15 +12,13 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.ruf2.popularmovies.R;
+import de.ruf2.popularmovies.data.TrailerData;
 
 /**
  * Created by Bernhard Ruf on 17.10.2015.
  */
 public class TrailerAdapter extends ArrayAdapter<TrailerData> {
-    @Bind(R.id.list_item_trailer_icon)
-            ImageView mImageView;
-    @Bind(R.id.list_item_trailer_name)
-            TextView mTextView;
     Context mContext;
 
 

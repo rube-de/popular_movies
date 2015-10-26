@@ -19,6 +19,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.ruf2.popularmovies.data.MovieData;
+import de.ruf2.popularmovies.data.TrailerData;
 import de.ruf2.popularmovies.utils.Utils;
 
 /**

@@ -1,4 +1,4 @@
-package de.ruf2.popularmovies;
+package de.ruf2.popularmovies.adapter;
 
 import android.content.Context;
 import android.view.View;
@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import de.ruf2.popularmovies.R;
+import de.ruf2.popularmovies.data.MovieData;
 
 /**
  * Created by Bernhard Ruf on 23.08.2015.
