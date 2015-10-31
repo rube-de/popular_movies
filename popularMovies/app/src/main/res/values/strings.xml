@@ -22,5 +22,6 @@
     <string name="detail_overview">Overview</string>
     <string name="detail_trailer">Trailers</string>
     <string name="detail_review">Reviews</string>
+    <string name="action_favorites">Favorites</string>
 
 </resources>

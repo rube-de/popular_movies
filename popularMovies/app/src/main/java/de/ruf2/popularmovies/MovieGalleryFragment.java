@@ -2,8 +2,12 @@ package de.ruf2.popularmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,21 +24,25 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.ruf2.popularmovies.adapter.MovieArrayAdapter;
+import de.ruf2.popularmovies.data.MovieColumns;
 import de.ruf2.popularmovies.data.MovieData;
+import de.ruf2.popularmovies.data.MoviesProvider;
 
 /**
  * Created by Bernhard Ruf on 23.08.2015.
  */
-public class MovieGalleryFragment extends Fragment {
+public class MovieGalleryFragment extends Fragment  implements LoaderManager.LoaderCallbacks<Cursor>{
     public static final String MOVIES_KEY = "moviesKey";
     public static final String EXTRA_MOVIE = "movie";
     public static final String RELEASE_DATE_DESC = "release_date.desc";
     public static final String VOTE_AVERAGE_DESC = "vote_average.desc";
     public static final String POPULARITY_DESC = "popularity.desc";
+    private static final int CURSOR_LOADER_ID = 0;
 
     private String TAG = FetchMovieGalleryTask.class.getSimpleName();
     private ArrayAdapter<MovieData> mMoviesAdapter;
     private ArrayList<MovieData> mListOfMovies;
+    private ArrayList<MovieData> mListOfFavMovies;
 
     @Bind(R.id.gridView_movies)
     GridView mGridView;
@@ -48,6 +56,7 @@ public class MovieGalleryFragment extends Fragment {
         if (savedInstance != null) {
             mListOfMovies = (ArrayList<MovieData>) savedInstance.get(MOVIES_KEY);
         }
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
         setHasOptionsMenu(true);
     }
 
@@ -121,6 +130,9 @@ public class MovieGalleryFragment extends Fragment {
                 changeOrderBy(POPULARITY_DESC);
                 updateMovieGallery();
                 return true;
+            case R.id.action_get_favorites:
+                mMoviesAdapter.clear();
+                mMoviesAdapter.addAll(mListOfFavMovies);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -150,5 +162,39 @@ public class MovieGalleryFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIES_KEY, mListOfMovies);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args){
+        return new CursorLoader(getActivity(), MoviesProvider.Movies.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
+        mListOfFavMovies = new ArrayList<>();
+        if (cursor != null && cursor.getCount() > 0) {
+//            cursor.moveToFirst();
+            while (cursor.moveToNext()) {
+                int idIndex = cursor.getInt(cursor.getColumnIndex(MovieColumns._ID));
+                String movieId = cursor.getString(cursor.getColumnIndex(MovieColumns.ID));
+                String title = cursor.getString(cursor.getColumnIndex(MovieColumns.TITLE));
+                String description = cursor.getString(cursor.getColumnIndex(MovieColumns.DESCRIPTION));
+                String date = cursor.getString(cursor.getColumnIndex(MovieColumns.RELEASE_DATE));
+                String rating = cursor.getString(cursor.getColumnIndex(MovieColumns.RATING));
+                String lang = cursor.getString(cursor.getColumnIndex(MovieColumns.LANGUAGE));
+                String path = cursor.getString(cursor.getColumnIndex(MovieColumns.PATH));
+                MovieData data = new MovieData(movieId, title, description, date, rating, lang, path);
+                mListOfFavMovies.add(data);
+            }
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader){
     }
 }

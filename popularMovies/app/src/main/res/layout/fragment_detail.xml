@@ -92,6 +92,19 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="5dp" />
                 </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add to Favorites"
+                        android:id="@+id/button_favorites"
+                        android:onClick="clickFavorites"
+                        android:layout_column="0" />
+                </TableRow>
             </TableLayout>
 
         </LinearLayout>

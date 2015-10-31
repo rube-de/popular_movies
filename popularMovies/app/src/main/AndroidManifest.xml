@@ -27,6 +27,10 @@
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".MainActivity"/>
         </activity>
+        <provider
+            android:authorities="de.ruf2.popularmovies.data.MoviesProvider"
+            android:name="de.ruf2.popularmovies.data.generated.MoviesProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

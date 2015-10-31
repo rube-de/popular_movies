@@ -10,7 +10,7 @@ import org.json.JSONObject;
  * Created by Bernhard Ruf on 23.08.2015.
  */
 public class Utils {
-    private static final String MOVIEDB_API_KEY = "*api-key*";
+    private static final String MOVIEDB_API_KEY = "68b734b65cf6c3085884bddee4164bdf";
     protected static final String TAG = "Utils";
     private static final String TMDB_RESULT = "results";
     private static final String TMDB_LANGUAGE = "original_language";

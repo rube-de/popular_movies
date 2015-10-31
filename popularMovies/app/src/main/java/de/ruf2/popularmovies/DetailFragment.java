@@ -1,6 +1,7 @@
 package de.ruf2.popularmovies;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,9 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -26,9 +29,12 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.ruf2.popularmovies.adapter.ReviewAdapter;
 import de.ruf2.popularmovies.adapter.TrailerAdapter;
+import de.ruf2.popularmovies.data.MovieColumns;
 import de.ruf2.popularmovies.data.MovieData;
+import de.ruf2.popularmovies.data.MoviesProvider;
 import de.ruf2.popularmovies.data.ReviewData;
 import de.ruf2.popularmovies.data.TrailerData;
 
@@ -55,6 +61,8 @@ public class DetailFragment extends Fragment {
     ListView mTrailersListView;
     @Bind(R.id.listview_reviews)
     ListView mReviewListView;
+    @Bind(R.id.button_favorites)
+    Button mButtonAdd;
 
     private ShareActionProvider mShareActionProvider;
     private static String SHARE_HASHTAG = " #nanodegree";
@@ -144,10 +152,26 @@ public class DetailFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     ReviewData review = mReviewAdapter.getItem(position);
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(review.getUrl()));
-                        startActivity(intent);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(review.getUrl()));
+                    startActivity(intent);
                 }
             });
+//            mButtonAdd.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View v){
+//                    ContentValues cv = new ContentValues();
+//                    cv.put(MovieColumns.ID, mMovie.getId());
+//                    cv.put(MovieColumns.TITLE, mMovie.getTitle());
+//                    cv.put(MovieColumns.DESCRIPTION, mMovie.getDescription());
+//                    cv.put(MovieColumns.RELEASE_DATE, mMovie.getReleaseDate());
+//                    cv.put(MovieColumns.RATING, mMovie.getVotingAverage());
+//                    cv.put(MovieColumns.LANGUAGE, mMovie.getLanguage());
+//                    cv.put(MovieColumns.PATH, mMovie.getPath());
+//                    getActivity().getContentResolver().insert(MoviesProvider.Movies.CONTENT_URI,cv);
+//                    Toast t = Toast.makeText(getActivity(), "Movie added to favorites", Toast.LENGTH_SHORT);
+//                    t.show();
+//                }
+//            });
+
         }
             return rootView;
         }
@@ -204,5 +228,20 @@ public class DetailFragment extends Fragment {
         FetchReviewListTask fetchReviewListTask = new FetchReviewListTask(getActivity(),mReviewAdapter);
         fetchReviewListTask.execute(movieData);
 
+    }
+    @OnClick(R.id.button_favorites)
+    public void onClickFavorites(View view) {
+        ContentValues cv = new ContentValues();
+        cv.put(MovieColumns.ID, mMovie.getId());
+        cv.put(MovieColumns.TITLE, mMovie.getTitle());
+        cv.put(MovieColumns.DESCRIPTION, mMovie.getDescription());
+        cv.put(MovieColumns.RELEASE_DATE, mMovie.getReleaseDate());
+        cv.put(MovieColumns.RATING, mMovie.getVotingAverage());
+        cv.put(MovieColumns.LANGUAGE, mMovie.getLanguage());
+        cv.put(MovieColumns.PATH, mMovie.getPath());
+        Uri url = getActivity().getContentResolver().insert(MoviesProvider.Movies.CONTENT_URI, cv);
+        Toast t = Toast.makeText(getActivity(), "Movie added to favorites", Toast.LENGTH_SHORT);
+        t.show();
+        Log.d(TAG, mMovie.getTitle() + " added to favs (" + url + ")");
     }
 }
