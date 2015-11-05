@@ -1,6 +1,7 @@
 package de.ruf2.popularmovies.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -36,7 +37,7 @@ public class MovieArrayAdapter extends ArrayAdapter<MovieData> {
         MovieData movie = getItem(position);
         String url = "http://image.tmdb.org/t/p/w185/" + movie.getPath();
 //        Log.d("adapter", "url: " + url);
-        Picasso.with(mContext).load(url).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(view);
+        Picasso.with(mContext).load(Uri.parse(url)).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(view);
 
         return view;
     }

@@ -27,19 +27,20 @@ public class MoviesProvider {
         return builder.build();
     }
 
-    @TableEndpoint(table = MovieDatabase.MOVIES) public static class Movies{
+    @TableEndpoint(table = MovieDatabase.MOVIES) public static class Movies {
         @ContentUri(
                 path = Path.MOVIES,
                 type = "vnd.android.cursor.dir/movies")
         public static final Uri CONTENT_URI = buildUri(Path.MOVIES);
-    }
-    @InexactContentUri(
-            name = "MOVIES_ID",
-            path = Path.MOVIES + "/#",
-            type = "vnd.android.cursor.item/movie",
-            whereColumn = MovieColumns._ID,
-            pathSegment = 1)
-    public static Uri withId(long id){
-        return buildUri(Path.MOVIES, String.valueOf(id));
+
+        @InexactContentUri(
+                name = "MOVIES_ID",
+                path = Path.MOVIES + "/#",
+                type = "vnd.android.cursor.item/movie",
+                whereColumn = MovieColumns._ID,
+                pathSegment = 1)
+        public static Uri withId(long id) {
+            return buildUri(Path.MOVIES, String.valueOf(id));
+        }
     }
 }

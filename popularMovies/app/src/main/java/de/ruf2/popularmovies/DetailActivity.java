@@ -20,10 +20,15 @@ public class DetailActivity extends LifecycleLoggingActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(MovieGalleryFragment.EXTRA_MOVIE, getIntent().getParcelableExtra(MovieGalleryFragment.EXTRA_MOVIE));
             DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(arguments);
+
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.detail_container, fragment);
+            fragmentTransaction.add(R.id.movie_detail_container, fragment);
             fragmentTransaction.commit();
         }
     }

@@ -1,6 +1,5 @@
 package de.ruf2.popularmovies;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -46,6 +45,12 @@ public class MovieGalleryFragment extends Fragment  implements LoaderManager.Loa
 
     @Bind(R.id.gridView_movies)
     GridView mGridView;
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(MovieData movieData);
+    }
 
     public MovieGalleryFragment() {
     }
@@ -83,8 +88,7 @@ public class MovieGalleryFragment extends Fragment  implements LoaderManager.Loa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MovieData movie = mMoviesAdapter.getItem(position);
-                Intent detailsIntent = new Intent(getActivity(), DetailActivity.class).putExtra(EXTRA_MOVIE, movie);
-                startActivity(detailsIntent);
+                ((Callback)getActivity()).onItemSelected(movie);
             }
         });
         return rootView;

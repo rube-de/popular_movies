@@ -11,9 +11,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"-->
 
             <ImageView
                 android:id="@+id/movie_detail_pic"
@@ -22,7 +23,7 @@
 
             <TableLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -100,7 +101,7 @@
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add to Favorites"
+                        android:text="@string/add_to_favs"
                         android:id="@+id/button_favorites"
                         android:onClick="clickFavorites"
                         android:layout_column="0" />

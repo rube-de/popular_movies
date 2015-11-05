@@ -3,6 +3,7 @@ package de.ruf2.popularmovies;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,6 +46,7 @@ public class DetailFragment extends Fragment {
     protected final String TAG = getClass().getSimpleName();
     public static final String TRAILER_KEY = "trailer";
     public static final String REVIEW_KEY = "review";
+    static final String DETAIL_DATA = "DATA";
 
 
     @Bind(R.id.movie_detail_title)
@@ -91,16 +93,16 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final Intent intent = getActivity().getIntent();
+        Bundle arguments = getArguments();
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
 
-        if (intent != null && intent.hasExtra(MovieGalleryFragment.EXTRA_MOVIE)) {
-            mMovie = intent.getParcelableExtra(MovieGalleryFragment.EXTRA_MOVIE);
+        if(arguments != null){
+            mMovie = arguments.getParcelable(MovieGalleryFragment.EXTRA_MOVIE);
 
             //set image
-            String url = "http://image.tmdb.org/t/p/w500/" + mMovie.getPath();
-            Picasso.with(getActivity()).load(url).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(mImage);
+            String url = "http://image.tmdb.org/t/p/w342/" + mMovie.getPath();
+            Picasso.with(getActivity()).load(Uri.parse(url)).placeholder(R.mipmap.img_placeholder).error(R.mipmap.error).into(mImage);
             //set title, overview
             mTitle.setText(mMovie.getTitle());
             mRelease.setText(mMovie.getReleaseDate());
@@ -156,22 +158,6 @@ public class DetailFragment extends Fragment {
                     startActivity(intent);
                 }
             });
-//            mButtonAdd.setOnClickListener(new View.OnClickListener() {
-//                public void onClick(View v){
-//                    ContentValues cv = new ContentValues();
-//                    cv.put(MovieColumns.ID, mMovie.getId());
-//                    cv.put(MovieColumns.TITLE, mMovie.getTitle());
-//                    cv.put(MovieColumns.DESCRIPTION, mMovie.getDescription());
-//                    cv.put(MovieColumns.RELEASE_DATE, mMovie.getReleaseDate());
-//                    cv.put(MovieColumns.RATING, mMovie.getVotingAverage());
-//                    cv.put(MovieColumns.LANGUAGE, mMovie.getLanguage());
-//                    cv.put(MovieColumns.PATH, mMovie.getPath());
-//                    getActivity().getContentResolver().insert(MoviesProvider.Movies.CONTENT_URI,cv);
-//                    Toast t = Toast.makeText(getActivity(), "Movie added to favorites", Toast.LENGTH_SHORT);
-//                    t.show();
-//                }
-//            });
-
         }
             return rootView;
         }
@@ -207,6 +193,7 @@ public class DetailFragment extends Fragment {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        if (mMovie != null)
         shareIntent.putExtra(Intent.EXTRA_TEXT, "Movie: " + mMovie.getTitle() + "(" + mMovie.getReleaseDate() + ")" + "|| Rating: " + mMovie.getVotingAverage() + " " + SHARE_HASHTAG);
         return shareIntent;
     }
@@ -231,17 +218,38 @@ public class DetailFragment extends Fragment {
     }
     @OnClick(R.id.button_favorites)
     public void onClickFavorites(View view) {
-        ContentValues cv = new ContentValues();
-        cv.put(MovieColumns.ID, mMovie.getId());
-        cv.put(MovieColumns.TITLE, mMovie.getTitle());
-        cv.put(MovieColumns.DESCRIPTION, mMovie.getDescription());
-        cv.put(MovieColumns.RELEASE_DATE, mMovie.getReleaseDate());
-        cv.put(MovieColumns.RATING, mMovie.getVotingAverage());
-        cv.put(MovieColumns.LANGUAGE, mMovie.getLanguage());
-        cv.put(MovieColumns.PATH, mMovie.getPath());
-        Uri url = getActivity().getContentResolver().insert(MoviesProvider.Movies.CONTENT_URI, cv);
-        Toast t = Toast.makeText(getActivity(), "Movie added to favorites", Toast.LENGTH_SHORT);
-        t.show();
-        Log.d(TAG, mMovie.getTitle() + " added to favs (" + url + ")");
+        String selection = MovieColumns.ID + " = ?";
+        String[] selectionArgs = {""};
+        selectionArgs[0] = mMovie.getId();
+        Cursor cursor = getActivity().getContentResolver().query(
+                MoviesProvider.Movies.CONTENT_URI,
+                null,
+                selection,
+                selectionArgs,
+                null);
+        if(cursor.getCount()<1) {
+            mButtonAdd.setText(R.string.remove_from_favs);
+
+            ContentValues cv = new ContentValues();
+            cv.put(MovieColumns.ID, mMovie.getId());
+            cv.put(MovieColumns.TITLE, mMovie.getTitle());
+            cv.put(MovieColumns.DESCRIPTION, mMovie.getDescription());
+            cv.put(MovieColumns.RELEASE_DATE, mMovie.getReleaseDate());
+            cv.put(MovieColumns.RATING, mMovie.getVotingAverage());
+            cv.put(MovieColumns.LANGUAGE, mMovie.getLanguage());
+            cv.put(MovieColumns.PATH, mMovie.getPath());
+            Uri url = getActivity().getContentResolver().insert(MoviesProvider.Movies.CONTENT_URI, cv);
+            Toast t = Toast.makeText(getActivity(), "Movie added to favorites", Toast.LENGTH_SHORT);
+            t.show();
+            Log.d(TAG, mMovie.getTitle() + " added to favs (" + url + ")");
+        } else {
+            mButtonAdd.setText(R.string.add_to_favs);
+            cursor.moveToFirst();
+            long _id = cursor.getLong(cursor.getColumnIndex(MovieColumns._ID));
+            getActivity().getContentResolver().delete(MoviesProvider.Movies.withId(_id), null,null);
+            Toast t = Toast.makeText(getActivity(), "Movie removed from favorites", Toast.LENGTH_SHORT);
+            t.show();
+            Log.d(TAG, mMovie.getTitle() + " removed from favs");
+        }
     }
 }
